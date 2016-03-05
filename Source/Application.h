@@ -11,5 +11,8 @@ namespace ColorTree
 	
 	private:
 		Webserver webserver;
+
+        std::string testMethod(std::string body);
+
 	};
 }
