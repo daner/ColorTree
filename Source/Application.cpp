@@ -1,24 +1,18 @@
 #include "Application.h"
-#include <chrono>
 #include <iostream>
 #include <functional>
 #include <string>
-
-using namespace std::chrono_literals;
 
 namespace ColorTree 
 {
 	Application::Application()
 	{
-
 	}
 
-	void Application::run()
+	void Application::Run()
 	{
-        webserver.handleFunctions["/test"] = std::bind(&Application::testMethod, this, std::placeholders::_1);
-
-
-		webserver.start();
+        webserver.AddHandleFunction("/color", std::bind(&Application::ReciveColor, this, std::placeholders::_1));
+		webserver.Start();
 		
 		int a;
 
@@ -26,10 +20,10 @@ namespace ColorTree
 
 	}
 
-    std::string Application::testMethod(std::string body)
+    std::string Application::ReciveColor(std::string body)
     {
         std::cout << body << std::endl;
 
-        return "Test Done";
+        return "{ \"Message\": \"Ok\" }";
     }
 }

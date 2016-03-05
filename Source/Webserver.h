@@ -15,22 +15,20 @@ namespace ColorTree
 	public:
 		Webserver();
 		~Webserver();
-		void start();
+		void Start();
+        void AddHandleFunction(std::string path, std::function<std::string(std::string)> fn);
 
-
-        std::unordered_map<std::string, std::function<std::string(std::string)>> handleFunctions;
+        std::unordered_map<std::string, std::function<std::string(std::string)>>::iterator HandlersBegin();
+        std::unordered_map<std::string, std::function<std::string(std::string)>>::iterator HandlersEnd();
 
 	private:
 		mg_mgr manager;
 		mg_connection* connection;
-
         std::string rootPath;
-
-		void workerFunction();
-
+     	void workerFunction();
 		std::atomic<bool> running;
 		std::thread workerThread;
 
-        
+        std::unordered_map<std::string, std::function<std::string(std::string)>> handleFunctions;
 	};
 }

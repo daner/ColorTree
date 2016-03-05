@@ -1,5 +1,7 @@
 #pragma once
+#include <memory>
 #include "Webserver.h"
+#include "ColorNode.h"
 
 namespace ColorTree
 {
@@ -7,12 +9,12 @@ namespace ColorTree
 	{
 	public:
 		Application();
-		void run();
+		void Run();
 	
 	private:
 		Webserver webserver;
+        std::string ReciveColor(std::string body);
 
-        std::string testMethod(std::string body);
-
+        std::unique_ptr<ColorNode> rootNode;
 	};
 }

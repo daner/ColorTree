@@ -13,7 +13,7 @@ static void event_handler(mg_connection* nc, int ev, void* ev_data)
         auto webserver = static_cast<ColorTree::Webserver*>(nc->mgr->user_data);
         auto handlerFound = false;
 
-        for (auto it = begin(webserver->handleFunctions); it != end(webserver->handleFunctions); ++it)
+        for (auto it = webserver->HandlersBegin(); it != webserver->HandlersEnd(); ++it)
         {
             if(mg_vcmp(&hm->uri, it->first.c_str()) == 0)
             {
@@ -52,13 +52,28 @@ namespace ColorTree
 		}
 	}
 
-	void Webserver::start()
+	void Webserver::Start()
 	{
 		running.store(true);
 		workerThread = std::thread(std::bind(&Webserver::workerFunction, this));
 	}
 
-	void Webserver::workerFunction()
+    void Webserver::AddHandleFunction(std::string path, std::function<std::string(std::string)> fn)
+    {
+        handleFunctions[path] = fn;
+    }
+
+    std::unordered_map<std::string, std::function<std::string(std::string)>>::iterator Webserver::HandlersBegin()
+    {
+        return begin(handleFunctions);
+    }
+
+    std::unordered_map<std::string, std::function<std::string(std::string)>>::iterator Webserver::HandlersEnd()
+    {
+        return end(handleFunctions);
+    }
+
+    void Webserver::workerFunction()
 	{
 		mg_mgr_init(&manager, this);
 		connection = mg_bind(&manager, s_http_port, event_handler);

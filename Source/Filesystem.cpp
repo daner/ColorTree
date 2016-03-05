@@ -13,6 +13,4 @@ namespace ColorTree
         auto dir = wpath.substr(0, wpath.find_last_of('\\') + 1);
         return string(begin(dir), end(dir));
     }  
-
 }
-
