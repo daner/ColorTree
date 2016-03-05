@@ -1,12 +1,21 @@
 cmake_minimum_required(VERSION 3.0)
 
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+set(COLORTREE_DIR ${PROJECT_SOURCE_DIR})
+set(COLORTREE_EXTERNAL_DIR ${COLORTREE_DIR}/External)
+
 add_subdirectory(External)
 
 project(ColorTree)
 
-file(GLOB_RECURSE ALL_SOURCES Source/*.h Source/*.cpp)
+include_directories(${COLORTREE_EXTERNAL_DIR}/mongoose)
+include_directories(${COLORTREE_EXTERNAL_DIR}/jsoncpp/dist)
+
+file(GLOB_RECURSE ALL_SOURCES Source/*.h 
+							  Source/*.cpp)
 
 add_executable(colortree ${ALL_SOURCES})
-target_link_libraries(colortree mongoose)
+target_link_libraries(colortree mongoose jsoncpp)
 
 
