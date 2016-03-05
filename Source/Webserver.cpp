@@ -37,8 +37,7 @@ namespace ColorTree
 	void Webserver::start()
 	{
 		running.store(true);
-		//workerThread = std::thread(std::bind(&Webserver::workerFunction, this));
-		workerFunction();
+		workerThread = std::thread(std::bind(&Webserver::workerFunction, this));
 	}
 
 	void Webserver::workerFunction()
@@ -47,7 +46,7 @@ namespace ColorTree
 		connection = mg_bind(&manager, s_http_port, event_handler);
 
 		mg_set_protocol_http_websocket(connection);
-		s_http_server_opts.document_root = "C:/Temp";
+		s_http_server_opts.document_root = ".";
 		s_http_server_opts.enable_directory_listing = "yes";
 
 		std::cout << "Starting web server on port " << s_http_port << std::endl;

@@ -1,6 +1,0 @@
-[submodule "External/mongoose"]
-	path = External/mongoose
-	url = https://github.com/cesanta/mongoose
-[submodule "External/jsoncpp"]
-	path = External/jsoncpp
-	url = https://github.com/open-source-parsers/jsoncpp.git

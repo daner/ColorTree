@@ -7,9 +7,9 @@ add_library(mongoose STATIC ${MONGOOSE_SOURCES})
 set_target_properties(mongoose PROPERTIES FOLDER "External")
 
 project(jsoncpp CXX)
-file(GLOB JSONCPP_SOURCES jsoncpp/dist/jsoncpp.cpp 
-						  jsoncpp/dist/json/json.h
-						  jsoncpp/dist/json/json-forwards.h)
+file(GLOB JSONCPP_SOURCES jsoncpp/jsoncpp.cpp 
+						  jsoncpp/json/json.h
+						  jsoncpp/json/json-forwards.h)
 
 add_library(jsoncpp STATIC ${JSONCPP_SOURCES})
 set_target_properties(jsoncpp PROPERTIES FOLDER "External")
