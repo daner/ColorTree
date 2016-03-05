@@ -1,4 +1,5 @@
 #pragma once
+#include "Webserver.h"
 
 namespace ColorTree
 {
@@ -6,7 +7,9 @@ namespace ColorTree
 	{
 	public:
 		Application();
-
+		void run();
+	
 	private:
+		Webserver webserver;
 	};
 }
