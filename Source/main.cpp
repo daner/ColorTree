@@ -6,6 +6,11 @@
 using namespace std;
 using namespace ColorTree;
 
+void framebufferSizeCallback(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+}
+
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	static_cast<Application*>(glfwGetWindowUserPointer(window))->KeyCallback(key, scancode, action, mods);
@@ -35,7 +40,6 @@ int main(int argc, char* argv[])
 		return EXIT_FAILURE;
 	}
 
-
 	cout << "GLEW: " << reinterpret_cast<const char*>(glewGetString(GLEW_VERSION)) << endl
 		<< "OpenGL: " << reinterpret_cast<char const*>(glGetString(GL_VERSION)) << endl
 		<< "GLSL: " << reinterpret_cast<char const*>(glGetString(GL_SHADING_LANGUAGE_VERSION)) << endl
@@ -49,6 +53,7 @@ int main(int argc, char* argv[])
 
 		glfwSetWindowUserPointer(window, app.get());
 		glfwSetKeyCallback(window, &keyCallback);
+        glfwSetFramebufferSizeCallback(window, &framebufferSizeCallback);
 
 		app->Init();
 
