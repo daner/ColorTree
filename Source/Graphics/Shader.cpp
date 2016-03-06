@@ -110,7 +110,7 @@ namespace ColorTree
 
     int Shader::CheckCompilationStatus(int shader, string fileName) const
     {
-        int isCompiled = 0;
+        GLint isCompiled = 0;
         glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
         if (isCompiled == GL_FALSE)
         {
@@ -125,8 +125,8 @@ namespace ColorTree
 
     int Shader::CheckLinkStatus(int program) const
     {
-        int isLinked = 0;
-        glGetProgramiv(program, GL_VALIDATE_STATUS, &isLinked);
+	    GLint isLinked = 0;
+        glGetProgramiv(program, GL_LINK_STATUS, &isLinked);
         if (isLinked == GL_FALSE)
         {
             GLint maxLength = 0;

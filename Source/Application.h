@@ -1,9 +1,7 @@
 #pragma once
 #include <GLFW/glfw3.h>
 #include <memory>
-#include <atomic>
 #include <queue>
-#include <string>
 #include <list>
 #include <mutex>
 #include <glm/glm.hpp>
@@ -21,18 +19,19 @@ namespace ColorTree
 		Application(GLFWwindow* window);
 
 		void Init();
-		void Draw();
+		void Update();
+		void Draw() const;
+		
 		void KeyCallback(int key, int scancode, int action, int mods);
 
 	private:
 		Webserver webserver;
-        std::string ReciveColor(std::string method, std::string body);
 		std::mutex colorMutex;
 		std::queue<glm::vec3> colorQueue;
+		std::string ReciveColor(std::string method, std::string body);
 
         std::unique_ptr<ColorNode> rootNode;
 		std::list<ColorNode*> splitList;
-
         void SplitNode(ColorNode* node);
 
 		GLFWwindow* glfwWindow;
