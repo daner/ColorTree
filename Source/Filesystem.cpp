@@ -1,5 +1,6 @@
 #include "Filesystem.h"
 #include <windows.h>
+#include <string>
 
 using namespace std;
 
@@ -12,5 +13,10 @@ namespace ColorTree
         wstring wpath(path);
         auto dir = wpath.substr(0, wpath.find_last_of('\\') + 1);
         return string(begin(dir), end(dir));
-    }  
+    }
+
+	string GetPath(string fileName)
+	{
+		return GetExecutablePath() + fileName;
+	}
 }

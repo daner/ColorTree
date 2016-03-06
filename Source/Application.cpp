@@ -1,41 +1,61 @@
+#include <GL/glew.h>
 #include "Application.h"
 #include <iostream>
 #include <functional>
 #include <string>
 #include <json/json.h>
 
-namespace ColorTree 
+using namespace std;
+
+namespace ColorTree
 {
-	Application::Application()
+	Application::Application(GLFWwindow* window) :
+		glfwWindow{ window }
 	{
 	}
 
-	void Application::Run()
+	void Application::Init()
 	{
-        webserver.AddHandleFunction("/color", std::bind(&Application::ReciveColor, this, std::placeholders::_1));
+		webserver.AddHandleFunction("/color", bind(&Application::ReciveColor, this, placeholders::_1));
 		webserver.Start();
-		
-		int a;
 
-		std::cin >> a;
+		glClearColor(0.8f, 0.2f, 0.2f, 1.0f);
+	}
+
+	void Application::Draw()
+	{
+		glClear(GL_COLOR_BUFFER_BIT);
 
 	}
 
-    std::string Application::ReciveColor(std::string body)
-    {
+	void Application::KeyCallback(int key, int scancode, int action, int mods)
+	{
+		switch (key)
+		{
+		case GLFW_KEY_ESCAPE:
+			glfwSetWindowShouldClose(glfwWindow, GL_TRUE);
+			break;
+		default:
+			break;
+		}
+	}
+
+	string Application::ReciveColor(string body)
+	{
 		Json::Value root;
 		Json::Reader reader;
-
-		if(reader.parse(body, root))
+		if (reader.parse(body, root))
 		{
 			auto r = root["r"].asFloat();
 			auto g = root["g"].asFloat();
 			auto b = root["b"].asFloat();
-
-			std::cout << "R: " << r << " G: " << g << " B: " << b << std::endl;
-
+			//cout << "R: " << r << " G: " << g << " B: " << b << endl;
+			{
+				lock_guard<mutex> lock(colorMutex);
+				colorQueue.push({ r, g, b });
+			}
 			return "{ \"Message\": \"Ok\" }";
 		}
-        return "{ \"Message\": \"Failed to parse json\" }";
-    }
+		return "{ \"Message\": \"Failed to parse json\" }";
+	}
 }
