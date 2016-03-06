@@ -9,6 +9,9 @@
 #include <glm/glm.hpp>
 #include "Webserver.h"
 #include "ColorNode.h"
+#include "Graphics/Quad.h"
+#include "Graphics/Shader.h"
+#include "Graphics/Texture.h"
 
 namespace ColorTree
 {
@@ -23,13 +26,19 @@ namespace ColorTree
 
 	private:
 		Webserver webserver;
-        std::string ReciveColor(std::string body);
+        std::string ReciveColor(std::string method, std::string body);
 		std::mutex colorMutex;
 		std::queue<glm::vec3> colorQueue;
 
         std::unique_ptr<ColorNode> rootNode;
 		std::list<ColorNode*> splitList;
 
+        void SplitNode(ColorNode* node);
+
 		GLFWwindow* glfwWindow;
+
+        Quad quad;
+        Texture texture;
+        Shader shader;
 	};
 }

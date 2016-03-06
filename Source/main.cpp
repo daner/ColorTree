@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
 	glfwMakeContextCurrent(window);
 
 	glewExperimental = GL_TRUE;
-	GLenum err = glewInit();
+    auto err = glewInit();
 	if (err != GLEW_OK)
 	{
 		cout << "glewInit failed, aborting. Error: " << glewGetErrorString(err) << endl;
@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
 		<< "OpenGL: " << reinterpret_cast<char const*>(glGetString(GL_VERSION)) << endl
 		<< "GLSL: " << reinterpret_cast<char const*>(glGetString(GL_SHADING_LANGUAGE_VERSION)) << endl
 		<< "Renderer: " << reinterpret_cast<char const*>(glGetString(GL_RENDERER)) << endl
-		<< "Vendor: " << reinterpret_cast<char const*>(glGetString(GL_VENDOR)) << endl << endl;
+		<< "Vendor: " << reinterpret_cast<char const*>(glGetString(GL_VENDOR)) << endl;
 
 	glfwSwapInterval(1);
 

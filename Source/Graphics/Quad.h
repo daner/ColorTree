@@ -9,8 +9,14 @@ namespace ColorTree
 		Quad();
 		~Quad();
 
+        Quad(const Quad& other) = delete;
+        Quad(Quad&& other) = delete;
+        Quad& operator=(const Quad& other) = delete;
+        Quad& operator=(Quad&& other) = delete;
+
 		void Init();
-		void Draw();
+        void Init(float left, float right, float bottom, float top, float distance);
+		void Draw() const;
 
 	private:
 		GLuint vaoId;

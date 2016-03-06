@@ -18,7 +18,7 @@ static void event_handler(mg_connection* nc, int ev, void* ev_data)
             if(mg_vcmp(&hm->uri, it->first.c_str()) == 0)
             {
                 handlerFound = true;
-                auto result = it->second({ hm->body.p, hm->body.len });
+                auto result = it->second({ hm->method.p, hm->method.len }, { hm->body.p, hm->body.len });
                 mg_printf(nc, "%s", "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n");
                 mg_send_http_chunk(nc, result.c_str(), result.length());
                 mg_send_http_chunk(nc, "", 0);
@@ -34,6 +34,8 @@ static void event_handler(mg_connection* nc, int ev, void* ev_data)
 
 namespace ColorTree
 {
+    using namespace Filesystem;
+
 	Webserver::Webserver() :
 		manager{ nullptr },
 		connection{ nullptr },
@@ -58,17 +60,17 @@ namespace ColorTree
 		workerThread = std::thread(std::bind(&Webserver::workerFunction, this));
 	}
 
-    void Webserver::AddHandleFunction(std::string path, std::function<std::string(std::string)> fn)
+    void Webserver::AddHandleFunction(std::string path, HandleFunction fn)
     {
         handleFunctions[path] = fn;
     }
 
-    std::unordered_map<std::string, std::function<std::string(std::string)>>::iterator Webserver::HandlersBegin()
+    std::unordered_map<std::string, HandleFunction>::iterator Webserver::HandlersBegin()
     {
         return begin(handleFunctions);
     }
 
-    std::unordered_map<std::string, std::function<std::string(std::string)>>::iterator Webserver::HandlersEnd()
+    std::unordered_map<std::string, HandleFunction>::iterator Webserver::HandlersEnd()
     {
         return end(handleFunctions);
     }

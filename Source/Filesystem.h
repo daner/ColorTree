@@ -3,6 +3,10 @@
 
 namespace ColorTree
 {
-    std::string GetExecutablePath();
-	std::string GetPath(std::string fileName);
+    namespace Filesystem
+    {
+        std::string GetExecutablePath();
+        std::string GetPath(std::string fileName);
+        std::string GetFileContents(std::string fileName);
+    }
 }
