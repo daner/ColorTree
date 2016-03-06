@@ -2,6 +2,7 @@
 #include <iostream>
 #include <functional>
 #include <string>
+#include <json/json.h>
 
 namespace ColorTree 
 {
@@ -22,8 +23,19 @@ namespace ColorTree
 
     std::string Application::ReciveColor(std::string body)
     {
-        std::cout << body << std::endl;
+		Json::Value root;
+		Json::Reader reader;
 
-        return "{ \"Message\": \"Ok\" }";
+		if(reader.parse(body, root))
+		{
+			auto r = root["r"].asFloat();
+			auto g = root["g"].asFloat();
+			auto b = root["b"].asFloat();
+
+			std::cout << "R: " << r << " G: " << g << " B: " << b << std::endl;
+
+			return "{ \"Message\": \"Ok\" }";
+		}
+        return "{ \"Message\": \"Failed to parse json\" }";
     }
 }
