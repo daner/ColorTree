@@ -13,33 +13,33 @@
 
 namespace ColorTree
 {
-	class Application 
-	{
-	public:
-		Application(GLFWwindow* window);
+    class Application
+    {
+    public:
+        Application(GLFWwindow* window);
 
-		void Init();
-		
-		void Update();
-		void Draw() const;
-		
+        void Init();
+
+        void Update();
+        void Draw() const;
+
         void WindowSizeCallback(int width, int height);
         void KeyCallback(int key, int scancode, int action, int mods) const;
 
-	private:
-		Webserver webserver;
+    private:
+        Webserver webserver;
         HandlerResult GetImage(std::string method, std::string body);
         HandlerResult ReciveColor(std::string method, std::string body);
         HandlerResult SaveTree(std::string method, std::string body);
 
-		std::mutex colorMutex;
-		std::queue<glm::vec3> colorQueue;
+        std::mutex colorMutex;
+        std::queue<glm::vec3> colorQueue;
 
         std::unique_ptr<ColorNode> rootNode;
-		std::list<ColorNode*> splitList;
+        std::list<ColorNode*> splitList;
         void SplitNode(ColorNode* node);
 
-		GLFWwindow* glfwWindow;
+        GLFWwindow* glfwWindow;
         glm::ivec2 windowSize;
 
         Quad quad;
@@ -49,5 +49,5 @@ namespace ColorTree
         std::mutex saveMutex;
         std::atomic<bool> saveFramebufferToMemory;
         std::vector<unsigned char> saveBuffer;
-	};
+    };
 }

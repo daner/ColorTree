@@ -13,60 +13,60 @@ void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	static_cast<Application*>(glfwGetWindowUserPointer(window))->KeyCallback(key, scancode, action, mods);
+    static_cast<Application*>(glfwGetWindowUserPointer(window))->KeyCallback(key, scancode, action, mods);
 }
 
 int main(int argc, char* argv[])
 {
-	if (!glfwInit())
-	{
-		cout << "glfwInit failed, aborting." << endl;
-		return EXIT_FAILURE;
-	}
+    if (!glfwInit())
+    {
+        cout << "glfwInit failed, aborting." << endl;
+        return EXIT_FAILURE;
+    }
 
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
 
-	auto window = glfwCreateWindow(960, 540, "ColorTree", nullptr, nullptr);
-	glfwMakeContextCurrent(window);
+    auto window = glfwCreateWindow(960, 540, "ColorTree", nullptr, nullptr);
+    glfwMakeContextCurrent(window);
 
-	glewExperimental = GL_TRUE;
+    glewExperimental = GL_TRUE;
     auto err = glewInit();
-	if (err != GLEW_OK)
-	{
-		cout << "glewInit failed, aborting. Error: " << glewGetErrorString(err) << endl;
-		glfwTerminate();
-		return EXIT_FAILURE;
-	}
+    if (err != GLEW_OK)
+    {
+        cout << "glewInit failed, aborting. Error: " << glewGetErrorString(err) << endl;
+        glfwTerminate();
+        return EXIT_FAILURE;
+    }
 
-	cout << "GLEW: " << reinterpret_cast<const char*>(glewGetString(GLEW_VERSION)) << endl
-		<< "OpenGL: " << reinterpret_cast<char const*>(glGetString(GL_VERSION)) << endl
-		<< "GLSL: " << reinterpret_cast<char const*>(glGetString(GL_SHADING_LANGUAGE_VERSION)) << endl
-		<< "Renderer: " << reinterpret_cast<char const*>(glGetString(GL_RENDERER)) << endl
-		<< "Vendor: " << reinterpret_cast<char const*>(glGetString(GL_VENDOR)) << endl;
+    cout << "GLEW:     " << reinterpret_cast<const char*>(glewGetString(GLEW_VERSION)) << endl
+        << "OpenGL:   " << reinterpret_cast<char const*>(glGetString(GL_VERSION)) << endl
+        << "GLSL:     " << reinterpret_cast<char const*>(glGetString(GL_SHADING_LANGUAGE_VERSION)) << endl
+        << "Renderer: " << reinterpret_cast<char const*>(glGetString(GL_RENDERER)) << endl
+        << "Vendor:   " << reinterpret_cast<char const*>(glGetString(GL_VENDOR)) << endl;
 
-	glfwSwapInterval(1);
+    glfwSwapInterval(1);
 
-	{
-		auto app = make_unique<Application>(window);
+    {
+        auto app = make_unique<Application>(window);
 
-		glfwSetWindowUserPointer(window, app.get());
-		glfwSetKeyCallback(window, &keyCallback);
+        glfwSetWindowUserPointer(window, app.get());
+        glfwSetKeyCallback(window, &keyCallback);
         glfwSetFramebufferSizeCallback(window, &framebufferSizeCallback);
 
-		app->Init();
+        app->Init();
 
-		while (!glfwWindowShouldClose(window))
-		{
-			app->Update();
-			app->Draw();
-			glfwSwapBuffers(window);
-			glfwPollEvents();
-		}
-	}
+        while (!glfwWindowShouldClose(window))
+        {
+            app->Update();
+            app->Draw();
+            glfwSwapBuffers(window);
+            glfwPollEvents();
+        }
+    }
 
-	glfwTerminate();
+    glfwTerminate();
 
-	return 0;
+    return 0;
 }

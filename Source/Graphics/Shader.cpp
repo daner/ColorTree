@@ -100,7 +100,7 @@ namespace ColorTree
 
     void Shader::UnloadShader()
     {
-        if (programId > 0) 
+        if (programId > 0)
         {
             glUseProgram(0);
             glDeleteProgram(programId);
@@ -125,7 +125,7 @@ namespace ColorTree
 
     int Shader::CheckLinkStatus(int program) const
     {
-	    GLint isLinked = 0;
+        GLint isLinked = 0;
         glGetProgramiv(program, GL_LINK_STATUS, &isLinked);
         if (isLinked == GL_FALSE)
         {

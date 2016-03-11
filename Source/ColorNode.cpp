@@ -75,17 +75,17 @@ namespace ColorTree
         auto widthCorrection = 0;
         auto heightCorrection = 0;
 
-        if(halfWidth * 2 != size.x)
+        if (halfWidth * 2 != size.x)
         {
             widthCorrection = 1;
         }
 
-        if(halfHeight * 2 != size.y)
+        if (halfHeight * 2 != size.y)
         {
             heightCorrection = 1;
         }
 
-        children[0] = make_unique<ColorNode>(ivec2{ offset.x, offset.y }, ivec2{ halfWidth, halfHeight });       
+        children[0] = make_unique<ColorNode>(ivec2{ offset.x, offset.y }, ivec2{ halfWidth, halfHeight });
         children[1] = make_unique<ColorNode>(ivec2{ offset.x + halfWidth, offset.y }, ivec2{ halfWidth + widthCorrection, halfHeight });
         children[2] = make_unique<ColorNode>(ivec2{ offset.x, offset.y + halfHeight }, ivec2{ halfWidth, halfHeight + heightCorrection });
         children[3] = make_unique<ColorNode>(ivec2{ offset.x + halfWidth, offset.y + halfHeight }, ivec2{ halfWidth + widthCorrection, halfHeight + heightCorrection });
