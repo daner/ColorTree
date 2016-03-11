@@ -2,6 +2,9 @@
 #include "Application.h"
 #include <functional>
 #include <json/json.h>
+#include <vector>
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <stb_image_write.h>
 
 namespace ColorTree
 {
@@ -9,16 +12,20 @@ namespace ColorTree
     using namespace glm;
 
     Application::Application(GLFWwindow* window) :
-        glfwWindow{ window }
+        glfwWindow{ window },
+        saveFramebufferToMemory{ false }
     {
     }
 
     void Application::Init()
     {
         webserver.AddHandleFunction("/color", bind(&Application::ReciveColor, this, placeholders::_1, placeholders::_2));
+        webserver.AddHandleFunction("/save", bind(&Application::SaveTree, this, placeholders::_1, placeholders::_2));
+        webserver.AddHandleFunction("/image", bind(&Application::GetImage, this, placeholders::_1, placeholders::_2));
         webserver.Start();
 
-        rootNode = make_unique<ColorNode>(ivec2{ 0, 0 }, ivec2{ 960, 540 });
+        windowSize = { 960, 540 };
+        rootNode = make_unique<ColorNode>(ivec2{ 0, 0 }, ivec2{ 2048, 2048 });
 
         splitList.push_back(rootNode.get());
 
@@ -45,7 +52,7 @@ namespace ColorTree
             }
         }
 
-        if(colorInQueue)
+        if (colorInQueue)
         {
             auto assignedColorToNode = false;
             while (!assignedColorToNode)
@@ -74,6 +81,22 @@ namespace ColorTree
         shader.Bind();
         texture.Bind(0);
         quad.Draw();
+
+        if (saveFramebufferToMemory.load())
+        {
+            saveBuffer.resize(windowSize.x * windowSize.y * 4);
+            glReadPixels(0, 0, windowSize.x, windowSize.y, GL_RGBA, GL_UNSIGNED_BYTE, saveBuffer.data());
+            saveFramebufferToMemory.store(false);
+        }
+    }
+
+    void Application::WindowSizeCallback(int width, int height)
+    {
+        if (width > 0 && height > 0)
+        {
+            glViewport(0, 0, width, height);
+            windowSize = { width, height };
+        }
     }
 
     void Application::SplitNode(ColorNode* node)
@@ -87,7 +110,7 @@ namespace ColorTree
         }
     }
 
-    void Application::KeyCallback(int key, int scancode, int action, int mods)
+    void Application::KeyCallback(int key, int scancode, int action, int mods) const
     {
         switch (key)
         {
@@ -99,8 +122,28 @@ namespace ColorTree
         }
     }
 
-    string Application::ReciveColor(string method, string body)
+    HandlerResult Application::GetImage(string method, string body)
     {
+        HandlerResult result{};
+        result.Type = ResultType::Data;
+        {
+            lock_guard<mutex> lock(saveMutex);
+            saveFramebufferToMemory.store(true);
+
+            while (saveFramebufferToMemory.load())
+            {
+            }
+
+            result.DataContent = stbi_write_png_to_mem(saveBuffer.data(), windowSize.x * 4, windowSize.x, windowSize.y, 4, &result.DataLength);
+        }
+        return result;
+    }
+
+    HandlerResult Application::ReciveColor(string method, string body)
+    {
+        HandlerResult result{};
+        result.Type = ResultType::Text;
+
         Json::Value root;
         Json::Reader reader;
         if (reader.parse(body, root))
@@ -112,8 +155,20 @@ namespace ColorTree
                 lock_guard<mutex> lock(colorMutex);
                 colorQueue.push({ r, g, b });
             }
-            return "{ \"Message\": \"Ok\" }";
+            result.TextContent = "{ \"Message\": \"Ok\" }";
         }
-        return "{ \"Message\": \"Failed to parse json\" }";
+        else
+        {
+            result.TextContent = "{ \"Message\": \"Failed to parse json\" }";
+        }
+        return result;
+    }
+
+    HandlerResult Application::SaveTree(string method, string body)
+    {
+        HandlerResult result{};
+        result.Type = ResultType::Text;
+        result.TextContent = "{ \"Message\": \"Tree\" }";
+        return result;
     }
 }

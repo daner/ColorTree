@@ -10,7 +10,23 @@
 
 namespace ColorTree
 {
-    typedef std::function<std::string(std::string, std::string)> HandleFunction;
+    enum class ResultType
+    {
+        Text,
+        Data
+    };
+
+    struct HandlerResult
+    {
+        ResultType Type;
+        
+        std::string TextContent;
+
+        unsigned char* DataContent;
+        int DataLength;
+    };
+
+    typedef std::function<HandlerResult(std::string, std::string)> HandlerFunction;
 
 	class Webserver
 	{
@@ -18,10 +34,10 @@ namespace ColorTree
 		Webserver();
 		~Webserver();
 		void Start();
-        void AddHandleFunction(std::string path, HandleFunction fn);
+        void AddHandleFunction(std::string path, HandlerFunction fn);
 
-        std::unordered_map<std::string, HandleFunction>::iterator HandlersBegin();
-        std::unordered_map<std::string, HandleFunction>::iterator HandlersEnd();
+        std::unordered_map<std::string, HandlerFunction>::iterator HandlersBegin();
+        std::unordered_map<std::string, HandlerFunction>::iterator HandlersEnd();
 
 	private:
 		mg_mgr manager;
@@ -30,7 +46,7 @@ namespace ColorTree
         std::string rootPath;
 		std::atomic<bool> running;
 		std::thread workerThread;
-        std::unordered_map<std::string, HandleFunction> handleFunctions;
+        std::unordered_map<std::string, HandlerFunction> handleFunctions;
 
         void workerFunction();
 	};

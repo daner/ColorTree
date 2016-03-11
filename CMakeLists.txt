@@ -14,6 +14,7 @@ include_directories(${COLORTREE_EXTERNAL_DIR}/jsoncpp)
 include_directories(${COLORTREE_EXTERNAL_DIR}/glm/include)
 include_directories(${COLORTREE_EXTERNAL_DIR}/glew/include)
 include_directories(${COLORTREE_EXTERNAL_DIR}/glfw/include)
+include_directories(${COLORTREE_EXTERNAL_DIR}/stb)
 
 file(GLOB_RECURSE SHADERS Resources/Shaders/*)
 file(GLOB_RECURSE WEB Resources/Web/*)

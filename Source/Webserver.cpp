@@ -1,6 +1,7 @@
 #include "Webserver.h"
 #include "Filesystem.h"
 #include <iostream>
+#include <mongoose.h>
 
 static const char *s_http_port = "8000";
 static struct mg_serve_http_opts s_http_server_opts;
@@ -19,12 +20,26 @@ static void event_handler(mg_connection* nc, int ev, void* ev_data)
             {
                 handlerFound = true;
                 auto result = it->second({ hm->method.p, hm->method.len }, { hm->body.p, hm->body.len });
-                mg_printf(nc, "%s", "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n");
-                mg_send_http_chunk(nc, result.c_str(), result.length());
-                mg_send_http_chunk(nc, "", 0);
+                
+                if(result.Type == ColorTree::ResultType::Text)
+                {
+                    mg_printf(nc, "%s", "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n");
+                    mg_send_http_chunk(nc, result.TextContent.c_str(), result.TextContent.length());
+                    mg_send_http_chunk(nc, "", 0);
+                }
+                else
+                {
+                    mg_send_head(nc, 200, result.DataLength, "Content-Type: image/png");
+                    mg_send(nc, result.DataContent, result.DataLength);
+
+                    if(result.DataLength > 0)
+                    {
+                        free(result.DataContent);
+                    }
+                }
             }
         }
-        
+             
         if(!handlerFound)
         {
             mg_serve_http(nc, hm, s_http_server_opts);
@@ -60,17 +75,17 @@ namespace ColorTree
 		workerThread = std::thread(std::bind(&Webserver::workerFunction, this));
 	}
 
-    void Webserver::AddHandleFunction(std::string path, HandleFunction fn)
+    void Webserver::AddHandleFunction(std::string path, HandlerFunction fn)
     {
         handleFunctions[path] = fn;
     }
 
-    std::unordered_map<std::string, HandleFunction>::iterator Webserver::HandlersBegin()
+    std::unordered_map<std::string, HandlerFunction>::iterator Webserver::HandlersBegin()
     {
         return begin(handleFunctions);
     }
 
-    std::unordered_map<std::string, HandleFunction>::iterator Webserver::HandlersEnd()
+    std::unordered_map<std::string, HandlerFunction>::iterator Webserver::HandlersEnd()
     {
         return end(handleFunctions);
     }
