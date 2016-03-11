@@ -23,7 +23,7 @@ static void event_handler(mg_connection* nc, int ev, void* ev_data)
 
                 if (result.Type == ColorTree::ResultType::Text)
                 {
-                    mg_printf(nc, "%s", "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n");
+                    mg_send_head(nc, 200, -1, "Content-Type: application/json");
                     mg_send_http_chunk(nc, result.TextContent.c_str(), result.TextContent.length());
                     mg_send_http_chunk(nc, "", 0);
                 }

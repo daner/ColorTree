@@ -3,7 +3,9 @@
 #include <functional>
 #include <json/json.h>
 #include <vector>
+
 #define STB_IMAGE_WRITE_IMPLEMENTATION
+#define STBI_WRITE_NO_STDIO
 #include <stb_image_write.h>
 
 namespace ColorTree
@@ -138,7 +140,22 @@ namespace ColorTree
             {
             }
 
-            result.DataContent = stbi_write_png_to_mem(saveBuffer.data(), windowSize.x * 4, windowSize.x, windowSize.y, 4, &result.DataLength);
+            //Flip image
+            for (auto j = 0; j * 2 < windowSize.y; ++j) 
+            {
+                auto x = j * windowSize.x * 4;
+                auto y = (windowSize.y - 1 - j) * windowSize.x * 4;
+                for (auto i = windowSize.x * 4; i > 0; --i) 
+                {
+                    auto tmp = saveBuffer.data()[x];
+                    saveBuffer.data()[x] = saveBuffer.data()[y];
+                    saveBuffer.data()[y] = tmp;
+                    ++x;
+                    ++y;
+                }
+            }
+
+            result.DataContent = stbi_write_png_to_mem(saveBuffer.data(), 0, windowSize.x, windowSize.y, 4, &result.DataLength);
         }
         return result;
     }

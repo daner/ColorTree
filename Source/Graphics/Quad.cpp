@@ -29,12 +29,12 @@ namespace ColorTree
                                   left,  bottom, distance,
                                   right, top,    distance, };
 
-        vector<GLfloat> uvs{ 0.0f, 0.0f,
-                             0.0f, 1.0f,
-                             1.0f, 1.0f,
-                             1.0f, 0.0f,
+        vector<GLfloat> uvs{ 0.0f, 1.0f,
                              0.0f, 0.0f,
-                             1.0f, 1.0f };
+                             1.0f, 0.0f,
+                             1.0f, 1.0f,
+                             0.0f, 1.0f,
+                             1.0f, 0.0f };
 
         GLuint vbo[2];
 
