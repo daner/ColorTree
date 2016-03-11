@@ -106,7 +106,7 @@ namespace ColorTree
 			mg_mgr_poll(&manager, 1000);
 		}
 
-        std::cout << "Shutting down web server." << std::endl;
+        std::cout << "Shutting down web server" << std::endl;
 		mg_mgr_free(&manager);
 	}
 }

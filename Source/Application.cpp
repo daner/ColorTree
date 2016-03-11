@@ -28,66 +28,71 @@ namespace ColorTree
         rootNode = make_unique<ColorNode>(ivec2{ 0, 0 }, ivec2{ 2048, 2048 });
 
         splitList.push_back(rootNode.get());
-
-        shader.InitWithSourceFiles("texture.vert", "texture.frag");
-        quad.Init(-1.0f, 1.0f, -1.0f, 1.0f, 0.0f);
+        
+		shader.InitWithSourceFiles("texture.vert", "texture.frag");
+        quad.Init();
         texture.Init(rootNode->Size(), { 0.0f, 0.0f, 0.0f });
-
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     }
 
-    void Application::Draw()
-    {
-        glClear(GL_COLOR_BUFFER_BIT);
+	void Application::Update()
+	{
+		vec3 color;
+		auto colorInQueue = false;
+		
+		{
+			lock_guard<mutex> lock(colorMutex);
+			if (!colorQueue.empty())
+			{
+				color = colorQueue.front();
+				colorQueue.pop();
+				colorInQueue = true;
+			}
+		}
 
-        vec3 color;
-        auto colorInQueue = false;
-        {
-            lock_guard<mutex> lock(colorMutex);
-            if (!colorQueue.empty())
-            {
-                color = colorQueue.front();
-                colorQueue.pop();
-                colorInQueue = true;
-            }
-        }
+		if (colorInQueue)
+		{
+			auto assignedColorToNode = false;
+			while (!assignedColorToNode)
+			{
+				auto node = splitList.front();
+				splitList.pop_front();
 
-        if (colorInQueue)
-        {
-            auto assignedColorToNode = false;
-            while (!assignedColorToNode)
-            {
-                auto node = splitList.front();
-                splitList.pop_front();
-
-                if (node->Status() == NodeStatus::Assigned)
-                {
-                    SplitNode(node);
-                }
-                else
-                {
-                    node->Color(color);
-                    texture.UpdateColor(node->Offset(), node->Size(), node->Color());
-                    if (node->Parent() != nullptr && node->Parent()->Child(1) == node)
-                    {
-                        texture.UpdateColor(node->Parent()->Child(3)->Offset(), node->Parent()->Child(3)->Size(), node->Color());
-                    }
-                    assignedColorToNode = true;
-                    SplitNode(node);
-                }
-            }
-        }
-
-        shader.Bind();
-        texture.Bind(0);
-        quad.Draw();
-
-        if (saveFramebufferToMemory.load())
+				if (node->Status() == NodeStatus::Assigned)
+				{
+					SplitNode(node);
+				}
+				else
+				{
+					node->Color(color);
+					texture.UpdateColor(node->Offset(), node->Size(), node->Color());
+					if (node->Parent() != nullptr && node->Parent()->Child(1) == node)
+					{
+						auto sibling = node->Parent()->Child(3);
+						texture.UpdateColor(sibling->Offset(), sibling->Size(), node->Color());
+					}
+					assignedColorToNode = true;
+					SplitNode(node);
+				}
+			}
+		}
+		
+		if (saveFramebufferToMemory.load())
         {
             saveBuffer.resize(windowSize.x * windowSize.y * 4);
             glReadPixels(0, 0, windowSize.x, windowSize.y, GL_RGBA, GL_UNSIGNED_BYTE, saveBuffer.data());
             saveFramebufferToMemory.store(false);
         }
+	}
+
+	void Application::Draw() const
+	{
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        shader.Bind();
+        texture.Bind(0);
+        quad.Draw();
     }
 
     void Application::WindowSizeCallback(int width, int height)
@@ -103,7 +108,6 @@ namespace ColorTree
     {
         node->Split();
         node->Child(0)->Color(node->Color());
-
         for (auto i = 0; i < 4; i++)
         {
             splitList.push_back(node->Child(i));

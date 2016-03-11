@@ -59,6 +59,7 @@ int main(int argc, char* argv[])
 
 		while (!glfwWindowShouldClose(window))
 		{
+			app->Update();
 			app->Draw();
 			glfwSwapBuffers(window);
 			glfwPollEvents();
