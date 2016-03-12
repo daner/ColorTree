@@ -54,6 +54,7 @@ namespace ColorTree
         std::atomic<bool> saveFramebufferToMemory;
         std::vector<unsigned char> saveBuffer;
 
+        std::chrono::time_point<std::chrono::system_clock> lastColorAddedTime;
 
         void AppendColor(ColorNode* node, Json::Value* jsonArray) const;
     };

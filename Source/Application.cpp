@@ -3,6 +3,7 @@
 #include <functional>
 #include <json/json.h>
 #include <vector>
+#include <chrono>
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #define STBI_WRITE_NO_STDIO
@@ -12,6 +13,8 @@ namespace ColorTree
 {
     using namespace std;
     using namespace glm;
+    using namespace chrono;
+    using namespace chrono_literals;
 
     Application::Application(GLFWwindow* window) :
         glfwWindow{ window },
@@ -29,8 +32,9 @@ namespace ColorTree
         webserver.Start();
 
         windowSize = { 960, 540 };
-        rootNode = make_unique<ColorNode>(ivec2{ 0, 0 }, ivec2{ 2048, 2048 });
 
+        rootNode = make_unique<ColorNode>(ivec2{ 0, 0 }, ivec2{ 2048, 2048 });
+        lastColorAddedTime = system_clock::now();
         splitList.push_back(rootNode.get());
 
         shader.InitWithSourceFiles("texture.vert", "texture.frag");
@@ -42,9 +46,9 @@ namespace ColorTree
 
     void Application::Update()
     {
-        if(colorMutex.try_lock())
+        if (colorMutex.try_lock())
         {
-            if (!colorQueue.empty())
+            if (!colorQueue.empty() && (system_clock::now() - lastColorAddedTime) > 200ms)
             {
                 auto color = colorQueue.front();
                 colorQueue.pop();
@@ -72,6 +76,7 @@ namespace ColorTree
                         SplitNode(node);
                     }
                 }
+                lastColorAddedTime = system_clock::now();
             }
             colorMutex.unlock();
         }
@@ -87,7 +92,6 @@ namespace ColorTree
     void Application::Draw() const
     {
         glClear(GL_COLOR_BUFFER_BIT);
-
         shader.Bind();
         texture.Bind(0);
         quad.Draw();
