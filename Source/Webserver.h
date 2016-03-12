@@ -19,7 +19,7 @@ namespace ColorTree
     struct HandlerResult
     {
         ResultType Type;
-
+        std::string Headers;
         std::string TextContent;
 
         unsigned char* DataContent;

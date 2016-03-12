@@ -20,4 +20,21 @@ $(function() {
 		});
 
 	});
+
+	$('#sendFileButton').click(function () {
+	    var formData = new FormData($('form')[0]);
+	    $.ajax({
+	        url: '/load',
+	        type: 'POST',
+	        xhr: function () {  
+	            var myXhr = $.ajaxSettings.xhr();
+	             return myXhr;
+	        },
+
+	        data: formData,
+	        cache: false,
+	        contentType: false,
+	        processData: false
+	    });
+	});
 });

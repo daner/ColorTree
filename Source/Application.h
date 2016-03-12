@@ -10,6 +10,7 @@
 #include "Graphics/Quad.h"
 #include "Graphics/Shader.h"
 #include "Graphics/Texture.h"
+#include <json/json.h>
 
 namespace ColorTree
 {
@@ -30,7 +31,10 @@ namespace ColorTree
         Webserver webserver;
         HandlerResult GetImage(std::string method, std::string body);
         HandlerResult ReciveColor(std::string method, std::string body);
-        HandlerResult SaveTree(std::string method, std::string body);
+        HandlerResult SaveTree(std::string method, std::string body) const;
+        HandlerResult LoadTree(std::string method, std::string body);
+
+        int idCounter;
 
         std::mutex colorMutex;
         std::queue<glm::vec3> colorQueue;
@@ -49,5 +53,8 @@ namespace ColorTree
         std::mutex saveMutex;
         std::atomic<bool> saveFramebufferToMemory;
         std::vector<unsigned char> saveBuffer;
+
+
+        void AppendColor(ColorNode* node, Json::Value* jsonArray) const;
     };
 }

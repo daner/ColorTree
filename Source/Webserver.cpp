@@ -23,13 +23,13 @@ static void event_handler(mg_connection* nc, int ev, void* ev_data)
 
                 if (result.Type == ColorTree::ResultType::Text)
                 {
-                    mg_send_head(nc, 200, -1, "Content-Type: application/json");
+                    mg_send_head(nc, 200, -1, result.Headers.c_str());
                     mg_send_http_chunk(nc, result.TextContent.c_str(), result.TextContent.length());
                     mg_send_http_chunk(nc, "", 0);
                 }
                 else
                 {
-                    mg_send_head(nc, 200, result.DataLength, "Content-Type: image/png");
+                    mg_send_head(nc, 200, result.DataLength, result.Headers.c_str());
                     mg_send(nc, result.DataContent, result.DataLength);
 
                     if (result.DataLength > 0)

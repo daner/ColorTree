@@ -8,6 +8,7 @@ namespace ColorTree
     using namespace glm;
 
     ColorNode::ColorNode() :
+        colorId{ 0 },
         parent{ nullptr },
         status{ NodeStatus::Unassigned },
         offset{ 0, 0 },
@@ -16,6 +17,7 @@ namespace ColorTree
     }
 
     ColorNode::ColorNode(ivec2 offset, ivec2 size) :
+        colorId{ 0 },
         parent{ nullptr },
         status{ NodeStatus::Unassigned },
         offset{ offset },
@@ -41,6 +43,11 @@ namespace ColorTree
         return nullptr;
     }
 
+    int ColorNode::ColorId() const
+    {
+        return colorId;
+    }
+
     ivec2 ColorNode::Offset() const
     {
         return offset;
@@ -56,10 +63,11 @@ namespace ColorTree
         return color;
     }
 
-    void ColorNode::Color(vec3 newColor)
+    void ColorNode::Color(int colorId, vec3 color)
     {
-        color = newColor;
-        status = NodeStatus::Assigned;
+        this->colorId = colorId;
+        this->color = color;
+        this->status = NodeStatus::Assigned;
     }
 
     NodeStatus ColorNode::Status() const
@@ -72,23 +80,11 @@ namespace ColorTree
         auto halfWidth = size.x / 2;
         auto halfHeight = size.y / 2;
 
-        auto widthCorrection = 0;
-        auto heightCorrection = 0;
-
-        if (halfWidth * 2 != size.x)
-        {
-            widthCorrection = 1;
-        }
-
-        if (halfHeight * 2 != size.y)
-        {
-            heightCorrection = 1;
-        }
 
         children[0] = make_unique<ColorNode>(ivec2{ offset.x, offset.y }, ivec2{ halfWidth, halfHeight });
-        children[1] = make_unique<ColorNode>(ivec2{ offset.x + halfWidth, offset.y }, ivec2{ halfWidth + widthCorrection, halfHeight });
-        children[2] = make_unique<ColorNode>(ivec2{ offset.x, offset.y + halfHeight }, ivec2{ halfWidth, halfHeight + heightCorrection });
-        children[3] = make_unique<ColorNode>(ivec2{ offset.x + halfWidth, offset.y + halfHeight }, ivec2{ halfWidth + widthCorrection, halfHeight + heightCorrection });
+        children[1] = make_unique<ColorNode>(ivec2{ offset.x + halfWidth, offset.y }, ivec2{ halfWidth, halfHeight });
+        children[2] = make_unique<ColorNode>(ivec2{ offset.x, offset.y + halfHeight }, ivec2{ halfWidth, halfHeight });
+        children[3] = make_unique<ColorNode>(ivec2{ offset.x + halfWidth, offset.y + halfHeight }, ivec2{ halfWidth, halfHeight });
 
         for (auto i = 0; i < 4; i++)
         {

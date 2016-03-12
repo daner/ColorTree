@@ -4,6 +4,12 @@
 
 namespace ColorTree
 {
+    struct OrderedColor
+    {
+        int colorId;
+        glm::vec3 color;
+    };
+
     enum class NodeStatus
     {
         Unassigned,
@@ -20,10 +26,11 @@ namespace ColorTree
         ColorNode* Parent() const;
         ColorNode* Child(int index) const;
 
+        int ColorId() const;
         glm::ivec2 Offset() const;
         glm::ivec2 Size() const;
         glm::vec3 Color() const;
-        void Color(glm::vec3 color);
+        void Color(int colorId, glm::vec3 color);
         NodeStatus Status() const;
 
         void Split();
@@ -36,5 +43,6 @@ namespace ColorTree
         glm::ivec2 offset;
         glm::ivec2 size;
         glm::vec3 color;
+        int colorId;
     };
 }
