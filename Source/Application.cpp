@@ -1,13 +1,13 @@
 #include <GL/glew.h>
-#include "Application.h"
 #include <functional>
 #include <json/json.h>
 #include <vector>
 #include <chrono>
-
+#include <iostream>
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #define STBI_WRITE_NO_STDIO
 #include <stb_image_write.h>
+#include "Application.h"
 
 namespace ColorTree
 {
@@ -48,7 +48,7 @@ namespace ColorTree
     {
         if (colorMutex.try_lock())
         {
-            if (!colorQueue.empty() && (system_clock::now() - lastColorAddedTime) > 200ms)
+            if (!colorQueue.empty() && (system_clock::now() - lastColorAddedTime) > 300ms)
             {
                 auto color = colorQueue.front();
                 colorQueue.pop();
@@ -138,9 +138,10 @@ namespace ColorTree
 
             while (saveFramebufferToMemory.load())
             {
+				this_thread::sleep_for(1ms);
             }
-
-            //Flip image
+			
+			//Flip image
             for (auto j = 0; j * 2 < windowSize.y; ++j)
             {
                 auto x = j * windowSize.x * 4;
@@ -153,11 +154,10 @@ namespace ColorTree
                     ++x;
                     ++y;
                 }
-            }
-
-            result.DataContent = stbi_write_png_to_mem(saveBuffer.data(), 0, windowSize.x, windowSize.y, 4, &result.DataLength);
-        }
-        result.Headers = "Content-Type: image/png\r\nContent-Disposition: attachment; filename=\"test.png\"";
+            }		
+			result.DataContent = stbi_write_png_to_mem(saveBuffer.data(), 0, windowSize.x, windowSize.y, 4, &result.DataLength);
+		}
+        result.Headers = "Content-Type: image/png\r\nContent-Disposition: attachment; filename=\"image.png\"";
         return result;
     }
 

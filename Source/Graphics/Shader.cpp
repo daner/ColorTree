@@ -61,7 +61,7 @@ namespace ColorTree
         auto fragmentSource = GetFileContents(GetPath("Resources/Shaders/" + fragmentFilename));
 
         auto vertexString = vertexSource.c_str();
-        int vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
+        GLuint vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
         glShaderSource(vertexShaderId, 1, &vertexString, nullptr);
         glCompileShader(vertexShaderId);
         if (CheckCompilationStatus(vertexShaderId, vertexFilename) == GL_FALSE)
@@ -71,7 +71,7 @@ namespace ColorTree
         }
 
         auto fragmentString = fragmentSource.c_str();
-        int fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
+        GLuint fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
         glShaderSource(fragmentShaderId, 1, &fragmentString, nullptr);
         glCompileShader(fragmentShaderId);
         if (CheckCompilationStatus(fragmentShaderId, fragmentFilename) == GL_FALSE)
