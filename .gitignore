@@ -1,0 +1,5 @@
+Web/node_modules/
+Web/typings/
+Web/wwwroot/lib/
+Web/wwwroot/app/**/*.js
+Web/wwwroot/app/**/*.js.map

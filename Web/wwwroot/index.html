@@ -1,34 +1,29 @@
 <html>
-<head>
-    <title>ColorPicker</title>
-    <script src="jquery-2.2.1.min.js" type="text/javascript"></script>
-    <script src="jscolor.min.js" type="text/javascript"></script>
-    <script src="script.js" type="text/javascript"></script>
-    <link href="style.css" type="text/css" rel="stylesheet" />
-</head>
-<body>
-    <div>
-        <h1>ColorPicker</h1>
-    </div>
-    <div>
-        Välj färg: <input id="colorinput" class="jscolor {width:400, height:200 }" value="ffffff">
-        <button id="sendButton">Skicka</button>
-    </div>
-<br/>
-    <div>
-        <a href="/image">Bild</a>
-    </div>
-    <br />
-    <div>
-        <a href="/save">Spara</a>
-    </div>
-    <br />
-    <div>
-        <form enctype="multipart/form-data">
-            <input name="file" type="file" />
-            <br /><br />
-            <input id="sendFileButton" type="button" value="Ladda" />
-        </form>
-    </div>
-</body>
+  <head>
+    <title>Angular 2 QuickStart</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">    
+    <link rel="stylesheet" href="styles.css">
+    <script src="lib/es6-shim/es6-shim.min.js"></script>
+    <script src="lib/systemjs/dist/system-polyfills.js"></script>
+    <script src="lib/angular2/es6/dev/src/testing/shims_for_IE.js"></script>   
+    <script src="lib/angular2/bundles/angular2-polyfills.js"></script>
+    <script src="lib/systemjs/dist/system.src.js"></script>
+    <script src="lib/rxjs/bundles/Rx.js"></script>
+    <script src="lib/angular2/bundles/angular2.dev.js"></script>
+    <script>
+      System.config({
+        packages: {        
+          app: {
+            format: 'register',
+            defaultExtension: 'js'
+          }
+        }
+      });
+      System.import('app/main').then(null, console.error.bind(console));
+    </script>
+  </head>
+  <body>
+    <my-app>Loading...</my-app>
+  </body>
 </html>

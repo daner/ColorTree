@@ -17,10 +17,10 @@ namespace ColorTree
     using namespace chrono_literals;
 
     Application::Application(GLFWwindow* window) :
+        settings{"Resources/config.json"},
         idCounter{ 0 },
         glfwWindow{ window },
-        saveFramebufferToMemory{ false },
-        settings{"Resources/config.json"}
+        saveFramebufferToMemory{ false }
     {
     }
 
