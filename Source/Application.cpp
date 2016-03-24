@@ -17,9 +17,9 @@ namespace ColorTree
     using namespace chrono_literals;
 
     Application::Application(GLFWwindow* window) :
+        idCounter{ 0 },
         glfwWindow{ window },
-        saveFramebufferToMemory{ false },
-        idCounter{ 0 }
+        saveFramebufferToMemory{ false }
     {
     }
 
