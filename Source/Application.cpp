@@ -19,12 +19,15 @@ namespace ColorTree
     Application::Application(GLFWwindow* window) :
         idCounter{ 0 },
         glfwWindow{ window },
-        saveFramebufferToMemory{ false }
+        saveFramebufferToMemory{ false },
+        settings{"Resources/config.json"}
     {
     }
 
     void Application::Init()
     {
+        webserver.SetRootPath(settings.WebRootPath);
+
         webserver.AddHandleFunction("/color", bind(&Application::ReciveColor, this, placeholders::_1, placeholders::_2));
         webserver.AddHandleFunction("/save", bind(&Application::SaveTree, this, placeholders::_1, placeholders::_2));
         webserver.AddHandleFunction("/image", bind(&Application::GetImage, this, placeholders::_1, placeholders::_2));

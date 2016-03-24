@@ -7,6 +7,7 @@
 #include <atomic>
 #include <thread>
 #include <unordered_map>
+#include <mutex>
 
 namespace ColorTree
 {
@@ -33,6 +34,7 @@ namespace ColorTree
     public:
         Webserver();
         ~Webserver();
+        void SetRootPath(std::string path);
         void Start();
         void AddHandleFunction(std::string path, HandlerFunction fn);
 

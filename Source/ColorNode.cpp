@@ -8,20 +8,20 @@ namespace ColorTree
     using namespace glm;
 
     ColorNode::ColorNode() :
-        colorId{ 0 },
         parent{ nullptr },
         status{ NodeStatus::Unassigned },
         offset{ 0, 0 },
-        size{ 0, 0 }
+        size{ 0, 0 },
+        colorId{ 0 }
     {
     }
 
     ColorNode::ColorNode(ivec2 offset, ivec2 size) :
-        colorId{ 0 },
         parent{ nullptr },
         status{ NodeStatus::Unassigned },
         offset{ offset },
-        size{ size }
+        size{ size },
+        colorId{ 0 }
     {
     }
 

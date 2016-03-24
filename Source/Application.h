@@ -11,6 +11,7 @@
 #include "Graphics/Shader.h"
 #include "Graphics/Texture.h"
 #include <json/json.h>
+#include "Settings.h"
 
 namespace ColorTree
 {
@@ -28,6 +29,8 @@ namespace ColorTree
         void KeyCallback(int key, int scancode, int action, int mods) const;
 
     private:
+        Settings settings;
+
         Webserver webserver;
         HandlerResult GetImage(std::string method, std::string body);
         HandlerResult ReciveColor(std::string method, std::string body);
