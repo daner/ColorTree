@@ -1,8 +1,9 @@
 <html>
   <head>
-    <title>Angular 2 QuickStart</title>
+    <title>ColorPicker</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">    
+    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="styles.css">
     <script src="lib/es6-shim/es6-shim.min.js"></script>
     <script src="lib/systemjs/dist/system-polyfills.js"></script>
@@ -11,19 +12,20 @@
     <script src="lib/systemjs/dist/system.src.js"></script>
     <script src="lib/rxjs/bundles/Rx.js"></script>
     <script src="lib/angular2/bundles/angular2.dev.js"></script>
+    <script src="lib/angular2/bundles/http.dev.js"></script>
     <script>
       System.config({
-        packages: {        
-          app: {
-            format: 'register',
-            defaultExtension: 'js'
-          }
-        }
+            packages: {        
+                app: { 
+                    format: 'register', 
+                    defaultExtension: 'js' 
+                } 
+            } 
       });
       System.import('app/main').then(null, console.error.bind(console));
     </script>
   </head>
   <body>
-    <my-app>Loading...</my-app>
+    <app>Loading...</app>
   </body>
 </html>

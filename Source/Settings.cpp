@@ -15,6 +15,7 @@ namespace ColorTree
 
     Settings::Settings(string fileName) : Settings()
     {
+        InitWithFile(fileName);
     }
 
     void Settings::InitWithFile(string fileName)

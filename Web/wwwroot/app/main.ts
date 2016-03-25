@@ -1,4 +1,6 @@
 import {bootstrap}    from 'angular2/platform/browser';
-import {AppComponent} from './app.component';
+import {App} from './app';
+import {ColorService} from './colorservice'
+import {HTTP_BINDINGS} from 'angular2/http';
 
-bootstrap(AppComponent);
+bootstrap(App, [ColorService, HTTP_BINDINGS]);
