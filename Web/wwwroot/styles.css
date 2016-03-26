@@ -1,4 +1,25 @@
-#colorCanvas {
-    width: 500px;
+#paletteCanvas {
+    width: 89%;
     height: 400px;
+    -webkit-user-select: none;
+}
+
+#sliderCanvas {
+    width: 9%;
+    height: 400px;
+    -webkit-user-select: none;
+}
+
+.selectedColor {
+    display: inline-block;
+    padding: 5px;
+    width: 140px;
+}
+
+.colorDiv {
+    margin-bottom: 5px;
+}
+
+.header{
+    margin-bottom: 2em;
 }

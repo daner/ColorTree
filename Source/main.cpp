@@ -27,6 +27,7 @@ int main(int argc, char* argv[])
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+    //glfwWindowHint(GLFW_DECORATED, 0);
 
     auto window = glfwCreateWindow(960, 540, "ColorTree", nullptr, nullptr);
     glfwMakeContextCurrent(window);
@@ -41,10 +42,10 @@ int main(int argc, char* argv[])
     }
 
     cout << "GLEW:     " << reinterpret_cast<const char*>(glewGetString(GLEW_VERSION)) << endl
-        << "OpenGL:   " << reinterpret_cast<char const*>(glGetString(GL_VERSION)) << endl
-        << "GLSL:     " << reinterpret_cast<char const*>(glGetString(GL_SHADING_LANGUAGE_VERSION)) << endl
-        << "Renderer: " << reinterpret_cast<char const*>(glGetString(GL_RENDERER)) << endl
-        << "Vendor:   " << reinterpret_cast<char const*>(glGetString(GL_VENDOR)) << endl;
+         << "OpenGL:   " << reinterpret_cast<char const*>(glGetString(GL_VERSION)) << endl
+         << "GLSL:     " << reinterpret_cast<char const*>(glGetString(GL_SHADING_LANGUAGE_VERSION)) << endl
+         << "Renderer: " << reinterpret_cast<char const*>(glGetString(GL_RENDERER)) << endl
+         << "Vendor:   " << reinterpret_cast<char const*>(glGetString(GL_VENDOR)) << endl;
 
     glfwSwapInterval(1);
 

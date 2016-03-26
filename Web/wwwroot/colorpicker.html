@@ -1,2 +1,11 @@
-<h2>ColorPicker Component</h2>
-<canvas id="colorCanvas"></canvas>
+<div class="row">
+    <div class="col-md-12">
+        <h3>Välj färg</h3>
+        <div class="colorDiv">
+            Vald färg: <span class="selectedColor" [ngStyle]="{'background-color': selectedColor.toRGBString(), 'color': selectedColor.isLight() ? 'black' : 'white'}">{{selectedColor.toRGBString()}}</span>
+            <button (click)="sendColor()">Skicka färg</button>
+        </div>
+        <canvas id="paletteCanvas" (click)="paletteClicked($event)" (mousemove)="paletteMove($event)"></canvas>
+        <canvas id="sliderCanvas" (click)="sliderClicked($event)" (mousemove)="sliderMove($event)"></canvas>
+    </div>
+</div>

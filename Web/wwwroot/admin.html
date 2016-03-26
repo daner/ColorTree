@@ -1,0 +1,14 @@
+<h3>Admin</h3>
+<div>
+    <a href="/image">Bild</a>
+</div>
+<br />
+<div>
+    <a href="/save">Spara</a>
+</div>
+<br />
+<div>
+    <input type="file" (change)="fileChanged($event)" placeholder="Välj fil..." />
+    <br/><br/>
+    <button type="button" (click)="upload()">Ladda upp</button>
+</div>
