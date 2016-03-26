@@ -32,17 +32,20 @@ namespace ColorTree
         webserver.AddHandleFunction("/save", bind(&Application::SaveTree, this, placeholders::_1, placeholders::_2));
         webserver.AddHandleFunction("/image", bind(&Application::GetImage, this, placeholders::_1, placeholders::_2));
         webserver.AddHandleFunction("/load", bind(&Application::LoadTree, this, placeholders::_1, placeholders::_2));
+        webserver.AddHandleFunction("/randomize", bind(&Application::Randomize, this, placeholders::_1, placeholders::_2));
         webserver.Start();
 
         windowSize = { 960, 540 };
 
-        rootNode = make_unique<ColorNode>(ivec2{ 0, 0 }, ivec2{ 2048, 2048 });
+        rootNode = make_unique<ColorNode>(ivec2{ 0, 0 }, ivec2{ 1024, 1024 });
+
         lastColorAddedTime = system_clock::now();
         splitList.push_back(rootNode.get());
 
         shader.InitWithSourceFiles("texture.vert", "texture.frag");
         quad.Init();
         texture.Init(rootNode->Size(), { 0.0f, 0.0f, 0.0f });
+        saveBuffer.resize(rootNode->Size().x * rootNode->Size().y * 4);
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     }
@@ -86,8 +89,7 @@ namespace ColorTree
 
         if (saveFramebufferToMemory.load())
         {
-            saveBuffer.resize(windowSize.x * windowSize.y * 4);
-            glReadPixels(0, 0, windowSize.x, windowSize.y, GL_RGBA, GL_UNSIGNED_BYTE, saveBuffer.data());
+            glGetTextureImage(texture.Id(), 0, GL_RGBA, GL_UNSIGNED_BYTE, static_cast<GLsizei>(saveBuffer.size()), saveBuffer.data());
             saveFramebufferToMemory.store(false);
         }
     }
@@ -143,22 +145,8 @@ namespace ColorTree
             {
 				this_thread::sleep_for(1ms);
             }
-			
-			//Flip image
-            for (auto j = 0; j * 2 < windowSize.y; ++j)
-            {
-                auto x = j * windowSize.x * 4;
-                auto y = (windowSize.y - 1 - j) * windowSize.x * 4;
-                for (auto i = windowSize.x * 4; i > 0; --i)
-                {
-                    auto tmp = saveBuffer.data()[x];
-                    saveBuffer.data()[x] = saveBuffer.data()[y];
-                    saveBuffer.data()[y] = tmp;
-                    ++x;
-                    ++y;
-                }
-            }		
-			result.DataContent = stbi_write_png_to_mem(saveBuffer.data(), 0, windowSize.x, windowSize.y, 4, &result.DataLength);
+				
+			result.DataContent = stbi_write_png_to_mem(saveBuffer.data(), 0, rootNode->Size().x, rootNode->Size().y, 4, &result.DataLength);
 		}
         result.Headers = "Content-Type: image/png\r\nContent-Disposition: attachment; filename=\"image.png\"";
         return result;
@@ -254,7 +242,7 @@ namespace ColorTree
                 {
                     lock_guard<mutex> lock(colorMutex);
 
-                    rootNode = make_unique<ColorNode>(ivec2{ 0, 0 }, ivec2{ 2048, 2048 });
+                    rootNode = make_unique<ColorNode>(ivec2{ 0, 0 }, ivec2{ 1024, 1024 });
                     splitList.clear();
                     splitList.push_back(rootNode.get());
 
@@ -276,6 +264,13 @@ namespace ColorTree
         }
 
         result.Headers = "Content-Type: application/json";
+        return result;
+    }
+
+    HandlerResult Application::Randomize(string method, string body)
+    {
+        HandlerResult result{};
+
         return result;
     }
 }

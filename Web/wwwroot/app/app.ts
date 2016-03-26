@@ -11,13 +11,12 @@ import {Admin} from './admin';
 @RouteConfig([
     { path: '/', name: 'ColorPicker', component: ColorPicker, useAsDefault: true },
     { path: '/admin', name: 'Admin', component: Admin }
-
 ])
 export class App {
     constructor(public router: Router) {
     }
 
-    isActive(instruction: any[]): boolean {
+    public isActive(instruction: any[]): boolean {
         return this.router.isRouteActive(this.router.generate(instruction));
     }
 }

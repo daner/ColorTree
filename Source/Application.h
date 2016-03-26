@@ -36,6 +36,7 @@ namespace ColorTree
         HandlerResult ReciveColor(std::string method, std::string body);
         HandlerResult SaveTree(std::string method, std::string body) const;
         HandlerResult LoadTree(std::string method, std::string body);
+        HandlerResult Randomize(std::string method, std::string body);
 
         int idCounter;
 

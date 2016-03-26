@@ -1,14 +1,18 @@
 <h3>Admin</h3>
-<div>
-    <a href="/image">Bild</a>
-</div>
-<br />
-<div>
-    <a href="/save">Spara</a>
-</div>
-<br />
-<div>
-    <input type="file" (change)="fileChanged($event)" placeholder="Välj fil..." />
-    <br/><br/>
-    <button type="button" (click)="upload()">Ladda upp</button>
+<div class="row">
+    <div class="col-md-4">
+        <a href="/image"><img style="width:100%;" src="/image" /></a>
+    </div>
+    <div class="col-md-4">
+        <a href="/save">Ladda ner träd som json</a>
+        <br/>
+        <br/>
+        <input type="file" (change)="fileChanged($event)" placeholder="Välj fil..." />
+        <br/>
+        <br/>
+        <button type="button" (click)="upload()">Ladda upp</button>
+    </div>
+    <div class="col-md-4">
+        <button type="button" (click)="randomize()">Slumpa om färger</button>
+    </div>
 </div>
