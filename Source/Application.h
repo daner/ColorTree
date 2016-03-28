@@ -55,11 +55,12 @@ namespace ColorTree
         Shader shader;
 
         std::mutex saveMutex;
-        std::atomic<bool> saveFramebufferToMemory;
+        std::atomic<bool> saveTextureToMemory;
         std::vector<unsigned char> saveBuffer;
 
         std::chrono::time_point<std::chrono::system_clock> lastColorAddedTime;
 
-        void AppendColor(ColorNode* node, Json::Value* jsonArray) const;
+        void AppendColorToJsonArray(ColorNode* node, Json::Value* jsonArray) const;
+        void AppendColorToVector(ColorNode* node, std::vector<OrderedColor>* vector) const;
     };
 }

@@ -20,7 +20,7 @@ namespace ColorTree
         settings{"Resources/config.json"},
         idCounter{ 0 },
         glfwWindow{ window },
-        saveFramebufferToMemory{ false }
+        saveTextureToMemory{ false }
     {
     }
 
@@ -87,10 +87,12 @@ namespace ColorTree
             colorMutex.unlock();
         }
 
-        if (saveFramebufferToMemory.load())
+        if (saveTextureToMemory.load())
         {
-            glGetTextureImage(texture.Id(), 0, GL_RGBA, GL_UNSIGNED_BYTE, static_cast<GLsizei>(saveBuffer.size()), saveBuffer.data());
-            saveFramebufferToMemory.store(false);
+            glBindTexture(GL_TEXTURE_2D, texture.Id());
+            glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, saveBuffer.data());
+            glBindTexture(GL_TEXTURE_2D, 0);
+            saveTextureToMemory.store(false);
         }
     }
 
@@ -139,9 +141,9 @@ namespace ColorTree
         result.Type = ResultType::Data;
         {
             lock_guard<mutex> lock(saveMutex);
-            saveFramebufferToMemory.store(true);
+            saveTextureToMemory.store(true);
 
-            while (saveFramebufferToMemory.load())
+            while (saveTextureToMemory.load())
             {
 				this_thread::sleep_for(1ms);
             }
@@ -183,14 +185,14 @@ namespace ColorTree
         HandlerResult result{};
         result.Type = ResultType::Text;
         Json::Value root;
-        AppendColor(rootNode.get(), &root);
+        AppendColorToJsonArray(rootNode.get(), &root);
         Json::FastWriter writer;
         result.TextContent = writer.write(root);
         result.Headers = "Content-Type: application/json\r\nContent-Disposition: attachment; filename=\"tree.json\"";
         return result;
     }
 
-    void Application::AppendColor(ColorNode* node, Json::Value* jsonArray) const
+    void Application::AppendColorToJsonArray(ColorNode* node, Json::Value* jsonArray) const
     {
         if (node->ColorId() > 0)
         {
@@ -205,7 +207,25 @@ namespace ColorTree
         {
             if (node->Child(i) != nullptr)
             {
-                AppendColor(node->Child(i), jsonArray);
+                AppendColorToJsonArray(node->Child(i), jsonArray);
+            }
+        }
+    }
+
+    void Application::AppendColorToVector(ColorNode* node, vector<OrderedColor>* vector) const
+    {
+        if(node->ColorId() > 0)
+        {
+            OrderedColor color = {};
+            color.colorId = node->ColorId();
+            color.color = node->Color();
+            vector->push_back(color);
+        }
+        for (auto i = 0; i < 4; i++)
+        {
+            if (node->Child(i) != nullptr)
+            {
+                AppendColorToVector(node->Child(i), vector);
             }
         }
     }
@@ -242,7 +262,7 @@ namespace ColorTree
                 {
                     lock_guard<mutex> lock(colorMutex);
 
-                    rootNode = make_unique<ColorNode>(ivec2{ 0, 0 }, ivec2{ 1024, 1024 });
+                    rootNode = make_unique<ColorNode>(ivec2{ 0, 0 }, rootNode->Size());
                     splitList.clear();
                     splitList.push_back(rootNode.get());
 
@@ -271,6 +291,26 @@ namespace ColorTree
     {
         HandlerResult result{};
 
+        vector<OrderedColor> colors{};
+        AppendColorToVector(rootNode.get(), &colors);
+
+        random_shuffle(begin(colors), end(colors));
+
+        {
+            lock_guard<mutex> lock(colorMutex);
+
+            rootNode = make_unique<ColorNode>(ivec2{ 0, 0 }, rootNode->Size());
+            splitList.clear();
+            splitList.push_back(rootNode.get());
+
+            for (auto& orderedColor : colors)
+            {
+                colorQueue.push(orderedColor.color);
+            }
+        }
+
+        result.TextContent = "{ \"Message\": \"Ok\" }";
+        result.Headers = "Content-Type: application/json";
         return result;
     }
 }
